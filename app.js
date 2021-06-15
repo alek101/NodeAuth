@@ -7,6 +7,9 @@ const app = express();
 // middleware
 app.use(express.static('public'));
 
+//to be able to recive json data
+app.use(express.json());
+
 // view engine
 app.set('view engine', 'ejs');
 
@@ -21,4 +24,3 @@ app.get('/', (req, res) => res.render('home'));
 app.get('/smoothies', (req, res) => res.render('smoothies'));
 app.use(authRoutes);
 
-//test
