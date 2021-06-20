@@ -17,13 +17,6 @@ const userSchema = new mongoose.Schema({
     }
 })
 
-//fire a function after doc saved to db
-
-// userSchema.post('save', function(doc, next) {
-//     console.log('new user was created and saved', doc)
-//     next()
-// })
-
 //fire a function before doc saved to db
 //this is releted to the user instance
 userSchema.pre('save', async function(next) {
@@ -32,6 +25,20 @@ userSchema.pre('save', async function(next) {
     this.password = await bcrypt.hash(this.password, salt);
     next();
 })
+
+//static method to log in user
+userSchema.statics.login = async function(email, password) {
+    //this is User model
+    const user = await this.findOne({email: email});
+    if (user) {
+        const auth = await bcrypt.compare(password, user.password);
+        if(auth) {
+            return user
+        }
+        throw Error('incorect password')
+    }
+    throw Error('incorect email')
+}
 
 const User = mongoose.model('user', userSchema);
 
